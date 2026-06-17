@@ -34,11 +34,9 @@ internal sealed class TextElementRecognizer : IElementRecognizer, IDisposable
         {
             var textElement = (TextElement)element;
 
-            using var screenshotMat = screenshot.ToMat()
-                .ConvertAndDispose(Upscale)
-                .ConvertAndDispose(GetConverters(textElement.Options))
-                .ConvertAndDispose(BitmapConverter.ToBitmap)
-                .ConvertAndDispose(PixConverter.ToPix);
+            using var preprocessedMat = TextPreprocessor.PreprocessToMat(screenshot, textElement.Options, UpscalingRatio);
+            using var preprocessedBitmap = BitmapConverter.ToBitmap(preprocessedMat);
+            using var screenshotMat = PixConverter.ToPix(preprocessedBitmap);
 
             if (token.IsCancellationRequested)
             {
@@ -65,7 +63,7 @@ internal sealed class TextElementRecognizer : IElementRecognizer, IDisposable
 
                 return token.IsCancellationRequested
                     ? RecognizerSearchResult.NotFound(PixConverter.ToBitmap(screenshotMat), element)
-                    : new RecognizerSearchResult(PixConverter.ToBitmap(screenshotMat), element, locations.Select(Downscale));
+                    : new RecognizerSearchResult(PixConverter.ToBitmap(screenshotMat), element, locations.Select(x => TextPreprocessor.Downscale(x, UpscalingRatio)));
             }
             finally
             {
@@ -92,55 +90,6 @@ internal sealed class TextElementRecognizer : IElementRecognizer, IDisposable
         return engine;
     }
 
-    private static IEnumerable<Func<Mat, Mat>> GetConverters(TextOptions options)
-    {
-        if (options == TextOptions.None)
-        {
-            yield break;
-        }
-
-        if (options.HasFlag(TextOptions.Grayscale))
-        {
-            yield return Grayscale;
-        }
-
-        if (options.HasFlag(TextOptions.BlackAndWhite))
-        {
-            yield return Binarize;
-        }
-
-        if (options.HasFlag(TextOptions.Negative))
-        {
-            yield return Negate;
-        }
-    }
-
-    private static Mat Upscale(Mat mat)
-    {
-        return mat.Resize(Multiply(mat.Size(), UpscalingRatio), 0, 0, InterpolationFlags.Nearest);
-    }
-
-    private static Mat Grayscale(Mat mat)
-    {
-        return mat.ToGrayscale();
-    }
-
-    private static Mat Binarize(Mat mat)
-    {
-        const float unusedThresholdOverridenByOtsuAlgorithm = 128;
-        return mat.Threshold(unusedThresholdOverridenByOtsuAlgorithm, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-    }
-
-    private static Mat Negate(Mat mat)
-    {
-        return mat.OnesComplement().ConvertAndDispose(x => x.ToMat());
-    }
-
-    private static OpenCvSharp.Size Multiply(OpenCvSharp.Size size, int factor)
-    {
-        return new OpenCvSharp.Size(size.Width * factor, size.Height * factor);
-    }
-
     private static Rectangle MergeRectangles(Rectangle r1, Rectangle r2)
     {
         var minLeft = Math.Min(r1.Left, r2.Left);
@@ -149,11 +98,6 @@ internal sealed class TextElementRecognizer : IElementRecognizer, IDisposable
         var maxBottom = Math.Max(r1.Bottom, r2.Bottom);
 
         return new Rectangle(minLeft, minTop, maxRight, maxBottom);
-    }
-
-    private static Rectangle Downscale(Rectangle r)
-    {
-        return r / (UpscalingRatio, UpscalingRatio);
     }
 
     public void Dispose()

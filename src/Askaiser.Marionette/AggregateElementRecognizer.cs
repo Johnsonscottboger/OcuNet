@@ -8,9 +8,9 @@ namespace Askaiser.Marionette;
 internal sealed class AggregateElementRecognizer : IElementRecognizer
 {
     private readonly ImageElementRecognizer _imageElementRecognizer;
-    private readonly TextElementRecognizer _textElementRecognizer;
+    private readonly IElementRecognizer _textElementRecognizer;
 
-    public AggregateElementRecognizer(ImageElementRecognizer imageElementRecognizer, TextElementRecognizer textElementRecognizer)
+    public AggregateElementRecognizer(ImageElementRecognizer imageElementRecognizer, IElementRecognizer textElementRecognizer)
     {
         this._imageElementRecognizer = imageElementRecognizer;
         this._textElementRecognizer = textElementRecognizer;

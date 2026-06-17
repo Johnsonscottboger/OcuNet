@@ -85,13 +85,15 @@ public sealed class MarionetteDriver : IDisposable
 
         var monitorService = new MonitorService(options.ScreenshotCacheDuration);
         var imageRecognizer = new ImageElementRecognizer();
-        var textRecognizer = new TextElementRecognizer(options);
+        IElementRecognizer textRecognizer = options.OcrEngine == OcrEngine.Tesseract
+            ? new TextElementRecognizer(options)
+            : new PaddleOcrTextElementRecognizer(options);
         var elementRecognizer = new AggregateElementRecognizer(imageRecognizer, textRecognizer);
         var mouseController = new MouseController();
         var keyboardController = new KeyboardController();
         var fileWriter = new RealFileWriter();
 
-        return new MarionetteDriver(options, fileWriter, monitorService, elementRecognizer, mouseController, keyboardController, textRecognizer);
+        return new MarionetteDriver(options, fileWriter, monitorService, elementRecognizer, mouseController, keyboardController, (IDisposable)textRecognizer);
     }
 
     public async Task<MonitorDescription[]> GetMonitorsAsync()

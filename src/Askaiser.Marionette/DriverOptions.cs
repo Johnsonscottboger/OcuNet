@@ -23,6 +23,12 @@ public sealed class DriverOptions
     private readonly TimeSpan _defaultWaitForDuration;
     private readonly TimeSpan _defaultKeyboardSleepAfterDuration;
     private readonly MouseSpeed _mouseSpeed;
+    private readonly OcrEngine _ocrEngine;
+    private readonly PaddleOcrModel _paddleOcrModel;
+    private readonly PaddleOcrDevice _paddleOcrDevice;
+    private readonly float _paddleOcrMinimumScore;
+    private readonly bool _paddleOcrAllowRotateDetection;
+    private readonly bool _paddleOcrEnable180Classification;
 
     public DriverOptions()
     {
@@ -34,6 +40,12 @@ public sealed class DriverOptions
         this._defaultWaitForDuration = TimeSpan.Zero;
         this._defaultKeyboardSleepAfterDuration = TimeSpan.Zero;
         this._mouseSpeed = MouseSpeed.Fast;
+        this._ocrEngine = OcrEngine.PaddleOCR;
+        this._paddleOcrModel = PaddleOcrModel.EnglishV5;
+        this._paddleOcrDevice = PaddleOcrDevice.Mkldnn;
+        this._paddleOcrMinimumScore = 0.5f;
+        this._paddleOcrAllowRotateDetection = false;
+        this._paddleOcrEnable180Classification = false;
     }
 
     /// <summary>
@@ -53,6 +65,60 @@ public sealed class DriverOptions
     {
         get => this._tesseractLanguage;
         init => this._tesseractLanguage = value?.Trim() is { Length: > 0 } trimmedValue ? trimmedValue : throw new ArgumentException(nameof(this.TesseractLanguage));
+    }
+
+    /// <summary>
+    /// The OCR engine used for text recognition. Default value: PaddleOCR.
+    /// </summary>
+    public OcrEngine OcrEngine
+    {
+        get => this._ocrEngine;
+        init => this._ocrEngine = value;
+    }
+
+    /// <summary>
+    /// The PaddleOCR model used when <see cref="OcrEngine"> is set to <see cref="Marionette.OcrEngine.PaddleOCR"/>. Default value: EnglishV5.
+    /// </summary>
+    public PaddleOcrModel PaddleOcrModel
+    {
+        get => this._paddleOcrModel;
+        init => this._paddleOcrModel = value;
+    }
+
+    /// <summary>
+    /// The inference device used by PaddleOCR. Default value: Mkldnn.
+    /// </summary>
+    public PaddleOcrDevice PaddleOcrDevice
+    {
+        get => this._paddleOcrDevice;
+        init => this._paddleOcrDevice = value;
+    }
+
+    /// <summary>
+    /// Minimum recognition score (0.0 to 1.0) for a PaddleOCR text region to be considered. Default value: 0.5.
+    /// </summary>
+    public float PaddleOcrMinimumScore
+    {
+        get => this._paddleOcrMinimumScore;
+        init => this._paddleOcrMinimumScore = value is >= 0.0f and <= 1.0f ? value : throw new ArgumentOutOfRangeException(nameof(this.PaddleOcrMinimumScore));
+    }
+
+    /// <summary>
+    /// Allows PaddleOCR to detect rotated text. Default value: false.
+    /// </summary>
+    public bool PaddleOcrAllowRotateDetection
+    {
+        get => this._paddleOcrAllowRotateDetection;
+        init => this._paddleOcrAllowRotateDetection = value;
+    }
+
+    /// <summary>
+    /// Enables 180-degree text classification in PaddleOCR. Default value: false.
+    /// </summary>
+    public bool PaddleOcrEnable180Classification
+    {
+        get => this._paddleOcrEnable180Classification;
+        init => this._paddleOcrEnable180Classification = value;
     }
 
     /// <summary>
