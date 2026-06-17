@@ -15,7 +15,7 @@ public sealed class TextElementRecognizerTests : BaseRecognizerTests, IDisposabl
     }
 
     [Theory]
-    [InlineData(0, 0, 120, 30, "Google News", TextOptions.BlackAndWhite | TextOptions.Negative, 80, 18)]
+    [InlineData(0, 0, 120, 30, "Google News", TextOptions.BlackAndWhite, 80, 18)]
     [InlineData(380, 170, 880, 336, "Headlines", TextOptions.None, 62, 17)]
     [InlineData(380, 170, 880, 336, "mperatures in southern califor", TextOptions.None, 172, 150)]
     [InlineData(20, 810, 160, 860, "English (United States)", TextOptions.None, 67, 36)]

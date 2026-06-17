@@ -1,4 +1,4 @@
-﻿{
+{
   "permissions": {
     "allow": [
       "WebSearch",
@@ -46,7 +46,8 @@
       "Bash(unzip:*)",
       "Bash(\"samples/OcuNet.ConsoleApp/bin/Release/net6.0-windows/OcuNet.ConsoleApp.exe\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git:*)"
     ]
   }
 }

@@ -11,7 +11,7 @@ public class DriverOptionsTests
         var options = new DriverOptions();
 
         Assert.Equal(OcrEngine.PaddleOCR, options.OcrEngine);
-        Assert.Equal(PaddleOcrModel.EnglishV5, options.PaddleOcrModel);
+        Assert.Equal(PaddleOcrModel.ChineseV5, options.PaddleOcrModel);
         Assert.Equal(PaddleOcrDevice.Mkldnn, options.PaddleOcrDevice);
         Assert.Equal(0.5f, options.PaddleOcrMinimumScore);
         Assert.False(options.PaddleOcrAllowRotateDetection);

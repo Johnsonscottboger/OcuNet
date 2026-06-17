@@ -56,7 +56,19 @@ internal static class TextPreprocessor
     private static Mat Binarize(Mat mat)
     {
         const float unusedThresholdOverridenByOtsuAlgorithm = 128;
-        return mat.Threshold(unusedThresholdOverridenByOtsuAlgorithm, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+        using var binary = mat.Threshold(unusedThresholdOverridenByOtsuAlgorithm, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+        var whitePixels = binary.CountNonZero();
+        var blackPixels = (binary.Rows * binary.Cols) - whitePixels;
+
+        // OCR engines expect dark text on a light background. If the threshold produced light text
+        // on a dark background (more black pixels than white), invert the result.
+        if (blackPixels > whitePixels)
+        {
+            return binary.OnesComplement().ConvertAndDispose(x => x.ToMat());
+        }
+
+        return binary.Clone();
     }
 
     private static Mat Negate(Mat mat)

@@ -18,7 +18,7 @@ public sealed class PaddleOcrTextElementRecognizerTests : BaseRecognizerTests, I
     }
 
     [Theory]
-    [InlineData(0, 0, 120, 30, "Google News", TextOptions.BlackAndWhite | TextOptions.Negative, 79, 17)]
+    [InlineData(0, 0, 120, 30, "Google News", TextOptions.BlackAndWhite, 79, 17)]
     [InlineData(380, 170, 880, 336, "Headlines", TextOptions.None, 62, 17)]
     [InlineData(380, 170, 880, 336, "mperatures in southern califor", TextOptions.None, 260, 148)]
     [InlineData(20, 810, 160, 860, "English (United States)", TextOptions.None, 66, 36)]

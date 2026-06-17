@@ -41,7 +41,7 @@ public sealed class DriverOptions
         this._defaultKeyboardSleepAfterDuration = TimeSpan.Zero;
         this._mouseSpeed = MouseSpeed.Fast;
         this._ocrEngine = OcrEngine.PaddleOCR;
-        this._paddleOcrModel = PaddleOcrModel.EnglishV5;
+        this._paddleOcrModel = PaddleOcrModel.ChineseV5;
         this._paddleOcrDevice = PaddleOcrDevice.Mkldnn;
         this._paddleOcrMinimumScore = 0.5f;
         this._paddleOcrAllowRotateDetection = false;
@@ -77,7 +77,7 @@ public sealed class DriverOptions
     }
 
     /// <summary>
-    /// The PaddleOCR model used when <see cref="OcrEngine"> is set to <see cref="OcuNet.OcrEngine.PaddleOCR"/>. Default value: EnglishV5.
+    /// The PaddleOCR model used when <see cref="OcrEngine"> is set to <see cref="OcuNet.OcrEngine.PaddleOCR"/>. Default value: ChineseV5.
     /// </summary>
     public PaddleOcrModel PaddleOcrModel
     {
