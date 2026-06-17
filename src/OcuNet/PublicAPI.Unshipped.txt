@@ -1,0 +1,32 @@
+﻿#nullable enable
+OcuNet.OcrEngine
+OcuNet.OcrEngine.PaddleOCR = 1 -> OcuNet.OcrEngine
+OcuNet.OcrEngine.Tesseract = 0 -> OcuNet.OcrEngine
+OcuNet.PaddleOcrDevice
+OcuNet.PaddleOcrDevice.Default = 0 -> OcuNet.PaddleOcrDevice
+OcuNet.PaddleOcrDevice.Mkldnn = 1 -> OcuNet.PaddleOcrDevice
+OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.ArabicV5 = 8 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.ChineseV5 = 1 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.CyrillicV5 = 7 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.DevanagariV5 = 9 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.EastSlavicV5 = 4 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.EnglishV5 = 0 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.GreekV5 = 6 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.KoreanV5 = 2 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.LatinV5 = 3 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.TamilV5 = 11 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.TeluguV5 = 10 -> OcuNet.PaddleOcrModel
+OcuNet.PaddleOcrModel.ThaiV5 = 5 -> OcuNet.PaddleOcrModel
+OcuNet.DriverOptions.OcrEngine.get -> OcuNet.OcrEngine
+OcuNet.DriverOptions.OcrEngine.init -> void
+OcuNet.DriverOptions.PaddleOcrAllowRotateDetection.get -> bool
+OcuNet.DriverOptions.PaddleOcrAllowRotateDetection.init -> void
+OcuNet.DriverOptions.PaddleOcrDevice.get -> OcuNet.PaddleOcrDevice
+OcuNet.DriverOptions.PaddleOcrDevice.init -> void
+OcuNet.DriverOptions.PaddleOcrEnable180Classification.get -> bool
+OcuNet.DriverOptions.PaddleOcrEnable180Classification.init -> void
+OcuNet.DriverOptions.PaddleOcrMinimumScore.get -> float
+OcuNet.DriverOptions.PaddleOcrMinimumScore.init -> void
+OcuNet.DriverOptions.PaddleOcrModel.get -> OcuNet.PaddleOcrModel
+OcuNet.DriverOptions.PaddleOcrModel.init -> void

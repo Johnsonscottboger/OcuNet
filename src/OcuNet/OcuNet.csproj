@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0-windows</TargetFrameworks>
+    <AssemblyTitle>OcuNet</AssemblyTitle>
+    <PackageId>OcuNet</PackageId>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OcuNet.SourceGenerator\OcuNet.SourceGenerator.csproj" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.11.0.20250507" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
+    <PackageReference Include="Sdcb.PaddleOCR" Version="3.3.1" IncludeAssets="All" PrivateAssets="None" />
+    <PackageReference Include="Sdcb.PaddleOCR.Models.Local" Version="3.3.1" IncludeAssets="All" PrivateAssets="None" />
+    <PackageReference Include="Sdcb.PaddleOCR.Models.LocalV5" Version="3.3.1" IncludeAssets="All" PrivateAssets="None" />
+    <PackageReference Include="Sdcb.PaddleInference.runtime.win64.mkl" Version="3.3.1.70" IncludeAssets="All" PrivateAssets="None" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" Condition=" '$(TargetFramework)' != 'net6.0' " />
+    <PackageReference Include="Tesseract" Version="4.1.1" IncludeAssets="All" PrivateAssets="None" />
+    <PackageReference Include="Tesseract.Drawing" Version="4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>content\tessdata;contentFiles\any\any\tessdata</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Messages.Designer.cs">
+      <DesignTime>true</DesignTime>
+      <AutoGen>true</AutoGen>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\OcuNet.targets" Pack="true" PackagePath="build\net45\" />
+    <Content Include="buildTransitive\OcuNet.targets" Pack="true" PackagePath="buildTransitive\net45\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Insert custom target to pack our source generator into generated package (https://stackoverflow.com/q/40396161/825695) -->
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <OcuNetPrivateAssetsFiles Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
+      <OcuNetSourceGeneratorDlls Include="@(OcuNetPrivateAssetsFiles)" Condition=" '%(Filename)' == 'OcuNet.SourceGenerator' And '%(Extension)' == '.dll' " />
+    </ItemGroup>
+
+    <!-- Prevent copying the source generator files multiple times (for each targeted framework) -->
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+      <TfmSpecificPackageFile Include="@(OcuNetSourceGeneratorDlls)" PackagePath="analyzers\dotnet\cs" />
+    </ItemGroup>
+  </Target>
+</Project>

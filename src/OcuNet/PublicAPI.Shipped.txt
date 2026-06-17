@@ -1,0 +1,415 @@
+﻿#nullable enable
+OcuNet.DriverOptions
+OcuNet.DriverOptions.DefaultKeyboardSleepAfterDuration.get -> System.TimeSpan
+OcuNet.DriverOptions.DefaultKeyboardSleepAfterDuration.init -> void
+OcuNet.DriverOptions.DefaultWaitForDuration.get -> System.TimeSpan
+OcuNet.DriverOptions.DefaultWaitForDuration.init -> void
+OcuNet.DriverOptions.DriverOptions() -> void
+OcuNet.DriverOptions.FailureScreenshotPath.get -> string?
+OcuNet.DriverOptions.FailureScreenshotPath.init -> void
+OcuNet.DriverOptions.MouseSpeed.get -> OcuNet.MouseSpeed
+OcuNet.DriverOptions.MouseSpeed.init -> void
+OcuNet.DriverOptions.ScreenshotCacheDuration.get -> System.TimeSpan
+OcuNet.DriverOptions.ScreenshotCacheDuration.init -> void
+OcuNet.DriverOptions.TesseractDataPath.get -> string!
+OcuNet.DriverOptions.TesseractDataPath.init -> void
+OcuNet.DriverOptions.TesseractLanguage.get -> string!
+OcuNet.DriverOptions.TesseractLanguage.init -> void
+OcuNet.DriverOptions.WaitForThrottlingInterval.get -> System.TimeSpan
+OcuNet.DriverOptions.WaitForThrottlingInterval.init -> void
+OcuNet.ElementCollection
+OcuNet.ElementCollection.Add(OcuNet.IElement! element) -> void
+OcuNet.ElementCollection.Clear() -> void
+OcuNet.ElementCollection.Contains(OcuNet.IElement! element) -> bool
+OcuNet.ElementCollection.Contains(string! name) -> bool
+OcuNet.ElementCollection.Count.get -> int
+OcuNet.ElementCollection.ElementCollection() -> void
+OcuNet.ElementCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<OcuNet.IElement!>!
+OcuNet.ElementCollection.Remove(OcuNet.IElement! element) -> void
+OcuNet.ElementCollection.Remove(string! name) -> void
+OcuNet.ElementCollection.this[string! name].get -> OcuNet.IElement!
+OcuNet.ElementCollection.TryGetValue(string! name, out OcuNet.IElement? value) -> bool
+OcuNet.ElementCollectionExtensions
+OcuNet.ElementNotFoundException
+OcuNet.ElementNotFoundException.Element.get -> OcuNet.IElement!
+OcuNet.ElementNotFoundException.ElementNotFoundException(OcuNet.IElement! element, System.TimeSpan duration) -> void
+OcuNet.IElement
+OcuNet.IElement.Name.get -> string!
+OcuNet.ImageElement
+OcuNet.ImageElement.Content.get -> byte[]!
+OcuNet.ImageElement.Content.init -> void
+OcuNet.ImageElement.Grayscale.get -> bool
+OcuNet.ImageElement.Grayscale.init -> void
+OcuNet.ImageElement.ImageElement(string! name, byte[]! content, decimal threshold, bool grayscale) -> void
+OcuNet.ImageElement.ImageElement(string! name, string! base64Content, decimal threshold, bool grayscale) -> void
+OcuNet.ImageElement.Name.get -> string!
+OcuNet.ImageElement.Name.init -> void
+OcuNet.ImageElement.Threshold.get -> decimal
+OcuNet.ImageElement.Threshold.init -> void
+OcuNet.ImageLibraryAttribute
+OcuNet.ImageLibraryAttribute.ImageLibraryAttribute(string! imageLibraryDirectoryPath) -> void
+OcuNet.ImageLibraryAttribute.ImageLibraryDirectoryPath.get -> string!
+OcuNet.OcuNetDriver
+OcuNet.OcuNetDriver.Dispose() -> void
+OcuNet.OcuNetDriver.DoubleClickAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.DragFromAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.DropToAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.GetCurrentMonitorAsync() -> System.Threading.Tasks.Task<OcuNet.MonitorDescription!>!
+OcuNet.OcuNetDriver.GetMonitorsAsync() -> System.Threading.Tasks.Task<OcuNet.MonitorDescription![]!>!
+OcuNet.OcuNetDriver.GetMousePositionAsync() -> OcuNet.Point!
+OcuNet.OcuNetDriver.GetScreenshotAsync() -> System.Threading.Tasks.Task<System.Drawing.Bitmap!>!
+OcuNet.OcuNetDriver.KeyDownAsync(OcuNet.VirtualKeyCode[]! keyCodes, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.KeyPressAsync(OcuNet.VirtualKeyCode[]! keyCodes, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.KeyUpAsync(OcuNet.VirtualKeyCode[]! keyCodes, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.MoveToAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.RightClickAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SaveScreenshotAsync(string! destinationPath) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SaveScreenshotAsync(System.IO.Stream! destinationStream) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.ScrollDownAsync(int scrollTicks = 1) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.ScrollDownUntilVisibleAsync(OcuNet.IElement! element, System.TimeSpan waitFor, int scrollTicks = 1, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.ScrollUpAsync(int scrollTicks = 1) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.ScrollUpUntilVisibleAsync(OcuNet.IElement! element, System.TimeSpan waitFor, int scrollTicks = 1, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SetCurrentMonitor(OcuNet.MonitorDescription! monitor) -> OcuNet.OcuNetDriver!
+OcuNet.OcuNetDriver.SetCurrentMonitor(int monitorIndex) -> OcuNet.OcuNetDriver!
+OcuNet.OcuNetDriver.SetDefaultKeyboardSleepAfterDuration(System.TimeSpan defaultKeyboardSleepAfter) -> OcuNet.OcuNetDriver!
+OcuNet.OcuNetDriver.SetDefaultWaitForDuration(System.TimeSpan defaultWaitFor) -> OcuNet.OcuNetDriver!
+OcuNet.OcuNetDriver.SetMouseSpeed(OcuNet.MouseSpeed speed) -> OcuNet.OcuNetDriver!
+OcuNet.OcuNetDriver.SingleClickAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SleepAsync(int millisecondsDelay) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SleepAsync(System.TimeSpan delay) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.TripleClickAsync(int x, int y) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.TypeTextAsync(string! text, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.WaitForAllAsync(System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<OcuNet.SearchResultCollection!>!
+OcuNet.OcuNetDriver.WaitForAnyAsync(System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<OcuNet.SearchResult!>!
+OcuNet.OcuNetDriver.WaitForAsync(OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<OcuNet.SearchResult!>!
+OcuNet.OcuNetDriverExtensions
+OcuNet.OcuNetException
+OcuNet.OcuNetException.OcuNetException(string! message) -> void
+OcuNet.MonitorDescription
+OcuNet.MonitorDescription.Index.get -> int
+OcuNet.MonitorDescription.Index.init -> void
+OcuNet.MonitorDescription.IsPrimary.get -> bool
+OcuNet.MonitorDescription.MonitorDescription(int Index, int Left, int Top, int Right, int Bottom) -> void
+OcuNet.MouseSpeed
+OcuNet.MouseSpeed.Fast = 1 -> OcuNet.MouseSpeed
+OcuNet.MouseSpeed.Immediate = 0 -> OcuNet.MouseSpeed
+OcuNet.MouseSpeed.Slow = 2 -> OcuNet.MouseSpeed
+OcuNet.MultipleElementFoundException
+OcuNet.MultipleElementFoundException.MultipleElementFoundException(OcuNet.SearchResult! result) -> void
+OcuNet.MultipleElementFoundException.Result.get -> OcuNet.SearchResult!
+OcuNet.Point
+OcuNet.Point.Deconstruct(out int x, out int y) -> void
+OcuNet.Point.Point(int X, int Y) -> void
+OcuNet.Point.X.get -> int
+OcuNet.Point.X.init -> void
+OcuNet.Point.Y.get -> int
+OcuNet.Point.Y.init -> void
+OcuNet.Rectangle
+OcuNet.Rectangle.Bottom.get -> int
+OcuNet.Rectangle.BottomLeft.get -> OcuNet.Point!
+OcuNet.Rectangle.BottomRight.get -> OcuNet.Point!
+OcuNet.Rectangle.Center.get -> OcuNet.Point!
+OcuNet.Rectangle.CenterBottom.get -> OcuNet.Point!
+OcuNet.Rectangle.CenterLeft.get -> OcuNet.Point!
+OcuNet.Rectangle.CenterRight.get -> OcuNet.Point!
+OcuNet.Rectangle.CenterTop.get -> OcuNet.Point!
+OcuNet.Rectangle.Deconstruct(out int left, out int top, out int right, out int bottom) -> void
+OcuNet.Rectangle.FromBottom(int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromBottomLeft(int width, int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromBottomRight(int width, int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromCenter(int width, int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromLeft(int width) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromRight(int width) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromTop(int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromTopLeft(int width, int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.FromTopRight(int width, int height) -> OcuNet.Rectangle!
+OcuNet.Rectangle.Height.get -> int
+OcuNet.Rectangle.Left.get -> int
+OcuNet.Rectangle.Rectangle(OcuNet.Point! topLeft, OcuNet.Point! bottomRight) -> void
+OcuNet.Rectangle.Rectangle(int left, int top, int right, int bottom) -> void
+OcuNet.Rectangle.Right.get -> int
+OcuNet.Rectangle.Top.get -> int
+OcuNet.Rectangle.TopLeft.get -> OcuNet.Point!
+OcuNet.Rectangle.TopRight.get -> OcuNet.Point!
+OcuNet.Rectangle.Width.get -> int
+OcuNet.SearchResult
+OcuNet.SearchResult.Element.get -> OcuNet.IElement!
+OcuNet.SearchResult.EnsureSingleLocation(System.TimeSpan waitFor) -> void
+OcuNet.SearchResult.GetEnumerator() -> System.Collections.Generic.IEnumerator<OcuNet.Rectangle!>!
+OcuNet.SearchResult.Location.get -> OcuNet.Rectangle!
+OcuNet.SearchResult.Locations.get -> System.Collections.Generic.IReadOnlyList<OcuNet.Rectangle!>!
+OcuNet.SearchResult.Success.get -> bool
+OcuNet.SearchResultCollection
+OcuNet.SearchResultCollection.Count.get -> int
+OcuNet.SearchResultCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<OcuNet.SearchResult!>!
+OcuNet.SearchResultCollection.this[OcuNet.IElement! element].get -> OcuNet.SearchResult!
+OcuNet.SearchResultCollection.this[string! name].get -> OcuNet.SearchResult!
+OcuNet.TextElement
+OcuNet.TextElement.Content.get -> string!
+OcuNet.TextElement.Content.init -> void
+OcuNet.TextElement.IgnoreCase.get -> bool
+OcuNet.TextElement.IgnoreCase.init -> void
+OcuNet.TextElement.Name.get -> string!
+OcuNet.TextElement.Name.init -> void
+OcuNet.TextElement.Options.get -> OcuNet.TextOptions
+OcuNet.TextElement.Options.init -> void
+OcuNet.TextElement.TextElement(string! content, OcuNet.TextOptions options = OcuNet.TextOptions.BlackAndWhite) -> void
+OcuNet.TextElement.TextElement(string! name, string! content, OcuNet.TextOptions options) -> void
+OcuNet.TextOptions
+OcuNet.TextOptions.BlackAndWhite = 3 -> OcuNet.TextOptions
+OcuNet.TextOptions.Grayscale = 1 -> OcuNet.TextOptions
+OcuNet.TextOptions.Negative = 4 -> OcuNet.TextOptions
+OcuNet.TextOptions.None = 0 -> OcuNet.TextOptions
+OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.A = 65 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Accept = 30 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Add = 107 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Alt = 18 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Applications = 93 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Attn = 246 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.B = 66 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Backslash = 220 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Backspace = 8 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserBack = 166 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserFavorites = 171 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserForward = 167 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserHome = 172 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserRefresh = 168 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserSearch = 170 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.BrowserStop = 169 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.C = 67 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Cancel = 3 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Caps = 20 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Clear = 12 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Comma = 188 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Control = 17 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Convert = 28 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.CrSel = 247 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.D = 68 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Decimal = 110 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Delete = 46 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit0 = 48 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit1 = 49 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit2 = 50 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit3 = 51 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit4 = 52 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit5 = 53 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit6 = 54 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit7 = 55 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit8 = 56 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Digit9 = 57 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Divide = 111 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.DownArrow = 40 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.E = 69 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.End = 35 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Enter = 13 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.EraseEOF = 249 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Escape = 27 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Execute = 43 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.ExSel = 248 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F = 70 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F1 = 112 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F10 = 121 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F11 = 122 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F12 = 123 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F13 = 124 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F14 = 125 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F15 = 126 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F16 = 127 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F17 = 128 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F18 = 129 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F19 = 130 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F2 = 113 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F20 = 131 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F21 = 132 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F22 = 133 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F23 = 134 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F24 = 135 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F3 = 114 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F4 = 115 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F5 = 116 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F6 = 117 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F7 = 118 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F8 = 119 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.F9 = 120 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Final = 24 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.G = 71 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.H = 72 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Hangeul = 21 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Hangul = 21 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Hanja = 25 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Help = 47 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Home = 36 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.I = 73 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Insert = 45 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.J = 74 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Junja = 23 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.K = 75 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Kana = 21 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Kanji = 25 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.L = 76 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LaunchApplication1 = 182 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LaunchApplication2 = 183 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LaunchMail = 180 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LaunchMediaSelect = 181 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftAlt = 164 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftArrow = 37 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftBrace = 219 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftControl = 162 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftMouseButton = 1 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftShift = 160 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.LeftWindows = 91 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.M = 77 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.MediaNextTrack = 176 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.MediaPlayPause = 179 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.MediaPrevTrack = 177 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.MediaStop = 178 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.MiddleMouseButton = 4 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Minus = 189 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.ModeChange = 31 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Multiply = 106 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.N = 78 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.NoName = 252 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.NonConvert = 29 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.NumLock = 144 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad0 = 96 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad1 = 97 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad2 = 98 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad3 = 99 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad4 = 100 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad5 = 101 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad6 = 102 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad7 = 103 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad8 = 104 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Numpad9 = 105 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.O = 79 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.OEM102 = 226 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.OEM8 = 223 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.OemClear = 254 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.P = 80 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.PA1 = 253 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Packet = 231 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.PageDown = 34 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.PageUp = 33 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Pause = 19 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Period = 190 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Play = 250 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Plus = 187 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Print = 42 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.PrintScreen = 44 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.ProcessKey = 229 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Q = 81 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.R = 82 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightAlt = 165 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightArrow = 39 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightBrace = 221 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightControl = 163 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightMouseButton = 2 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightShift = 161 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.RightWindows = 92 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.S = 83 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.ScrollLock = 145 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Select = 41 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Semicolon = 186 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Separator = 108 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Shift = 16 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.SingleQuote = 222 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Slash = 191 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Sleep = 95 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Space = 32 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Subtract = 109 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.T = 84 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Tab = 9 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Tilde = 192 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.U = 85 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.UpArrow = 38 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.V = 86 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.VolumeDown = 174 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.VolumeMute = 173 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.VolumeUp = 175 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.W = 87 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.X = 88 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.X1MouseButton = 5 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.X2MouseButton = 6 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Y = 89 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Z = 90 -> OcuNet.VirtualKeyCode
+OcuNet.VirtualKeyCode.Zoom = 251 -> OcuNet.VirtualKeyCode
+override OcuNet.ImageElement.ToString() -> string!
+override OcuNet.MonitorDescription.ToString() -> string!
+override OcuNet.Point.ToString() -> string!
+override OcuNet.Rectangle.ToString() -> string!
+override OcuNet.SearchResult.ToString() -> string!
+override OcuNet.TextElement.ToString() -> string!
+static OcuNet.ElementCollectionExtensions.LoadAsync(this OcuNet.ElementCollection! elements, string! filePath) -> System.Threading.Tasks.Task<OcuNet.ElementCollection!>!
+static OcuNet.ElementCollectionExtensions.LoadAsync(this OcuNet.ElementCollection! elements, System.IO.Stream! stream) -> System.Threading.Tasks.Task!
+static OcuNet.ElementCollectionExtensions.SaveAsync(this OcuNet.ElementCollection! elements, string! filePath) -> System.Threading.Tasks.Task!
+static OcuNet.ElementCollectionExtensions.SaveAsync(this OcuNet.ElementCollection! elements, System.IO.Stream! destinationStream) -> System.Threading.Tasks.Task<OcuNet.ElementCollection!>!
+static OcuNet.OcuNetDriver.Create() -> OcuNet.OcuNetDriver!
+static OcuNet.OcuNetDriver.Create(OcuNet.DriverOptions! options) -> OcuNet.OcuNetDriver!
+static OcuNet.OcuNetDriverExtensions.AreAllVisibleAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<bool>!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DoubleClickAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DragFromAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.DropToAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.FindLocationsAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<OcuNet.Rectangle![]!>!
+static OcuNet.OcuNetDriverExtensions.FindLocationsAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task<OcuNet.Rectangle![]!>!
+static OcuNet.OcuNetDriverExtensions.FindLocationsAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task<OcuNet.Rectangle![]!>!
+static OcuNet.OcuNetDriverExtensions.IsAnyVisibleAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<bool>!
+static OcuNet.OcuNetDriverExtensions.IsVisibleAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task<bool>!
+static OcuNet.OcuNetDriverExtensions.IsVisibleAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task<bool>!
+static OcuNet.OcuNetDriverExtensions.IsVisibleAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task<bool>!
+static OcuNet.OcuNetDriverExtensions.KeyDownAsync(this OcuNet.OcuNetDriver! driver, OcuNet.VirtualKeyCode keyCode, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.KeyPressAsync(this OcuNet.OcuNetDriver! driver, OcuNet.VirtualKeyCode keyCode, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.KeyUpAsync(this OcuNet.OcuNetDriver! driver, OcuNet.VirtualKeyCode keyCode, System.TimeSpan? sleepAfter = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.MoveToAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.RightClickAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.SingleClickAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAnyAsync(this OcuNet.OcuNetDriver! driver, System.Collections.Generic.IEnumerable<OcuNet.IElement!>! elements, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.IElement! element, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.Point! coordinates) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAsync(this OcuNet.OcuNetDriver! driver, OcuNet.SearchResult! searchResult) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.TripleClickAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task!
+static OcuNet.OcuNetDriverExtensions.WaitForAsync(this OcuNet.OcuNetDriver! driver, string! text, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, OcuNet.TextOptions textOptions = OcuNet.TextOptions.BlackAndWhite) -> System.Threading.Tasks.Task<OcuNet.SearchResult!>!
+static OcuNet.OcuNetDriverExtensions.WaitForAsync(this OcuNet.OcuNetDriver! driver, System.Drawing.Image! image, System.TimeSpan? waitFor = null, OcuNet.Rectangle? searchRect = null, decimal threshold = 0.95, bool grayscale = false) -> System.Threading.Tasks.Task<OcuNet.SearchResult!>!
+static OcuNet.Point.operator +(OcuNet.Point! p1, OcuNet.Point! p2) -> OcuNet.Point!
+static OcuNet.Point.operator +(OcuNet.Point! point, (int, int) xy) -> OcuNet.Point!
+static OcuNet.Point.operator -(OcuNet.Point! p1, OcuNet.Point! p2) -> OcuNet.Point!
+static OcuNet.Point.operator -(OcuNet.Point! point, (int, int) xy) -> OcuNet.Point!
+static OcuNet.Rectangle.operator *(OcuNet.Rectangle! rect, (double, double) xy) -> OcuNet.Rectangle!
+static OcuNet.Rectangle.operator +(OcuNet.Rectangle! rect, (int, int) xy) -> OcuNet.Rectangle!
+static OcuNet.Rectangle.operator +(OcuNet.Rectangle! rect, OcuNet.Point! xy) -> OcuNet.Rectangle!
+static OcuNet.Rectangle.operator -(OcuNet.Rectangle! rect, (int, int) xy) -> OcuNet.Rectangle!
+static OcuNet.Rectangle.operator -(OcuNet.Rectangle! rect, OcuNet.Point! xy) -> OcuNet.Rectangle!
+static OcuNet.Rectangle.operator /(OcuNet.Rectangle! rect, (double, double) xy) -> OcuNet.Rectangle!
+static OcuNet.SearchResult.NotFound(OcuNet.IElement! element) -> OcuNet.SearchResult!
+static readonly OcuNet.Point.Empty -> OcuNet.Point!

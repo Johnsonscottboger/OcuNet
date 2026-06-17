@@ -1,10 +1,10 @@
-<!-- omit in toc -->
-# Marionette
+﻿<!-- omit in toc -->
+# OcuNet
 
-[![nuget](https://img.shields.io/nuget/v/Askaiser.Marionette.svg?logo=nuget)](https://www.nuget.org/packages/Askaiser.Marionette/)
+[![nuget](https://img.shields.io/nuget/v/OcuNet.svg?logo=nuget)](https://www.nuget.org/packages/OcuNet/)
 [![build](https://img.shields.io/github/actions/workflow/status/asimmon/askaiser-marionette/ci.yml?branch=master&logo=github)](https://github.com/asimmon/askaiser-marionette/actions/workflows/ci.yml)
 
-**Marionette is a test automation framework based on image and text recognition**. It includes a C# source generator that allows you to quickly interact with C# properties generated from images in your project or elsewhere. The framework is built on top of **OpenCV** and **Tesseract OCR** and only supports Windows for now.
+**OcuNet is a test automation framework based on image and text recognition**. It includes a C# source generator that allows you to quickly interact with C# properties generated from images in your project or elsewhere. The framework is built on top of **OpenCV** and **Tesseract OCR** and only supports Windows for now.
 
 **Table of contents**
 
@@ -18,7 +18,7 @@
 
 ## 🔥 Motivation and features
 
-* Unlike other test automation frameworks, Marionette **does not rely on hardcoded identifiers, CSS or XPath selectors**. It uses image and text recognition to ensure that you interact with elements that are **actually visible** on the screen.
+* Unlike other test automation frameworks, OcuNet **does not rely on hardcoded identifiers, CSS or XPath selectors**. It uses image and text recognition to ensure that you interact with elements that are **actually visible** on the screen.
 * Maintaining identifiers, CSS and XPath selectors over time can be hard. Capturing small screenshots and finding text with an OCR is not.
 * With the built-in C# source generator, you can start **writing the test code right away**.
 * You can interact with the whole operating system, instead of a single application.
@@ -34,7 +34,7 @@
 * `00:08` : Rename and organize your screenshots in a meaningful way,
 * `00:22` : Drop your screenshots in your C# project,
 * `00:30` : Use `ImageLibraryAttribute` to **automatically generate C# properties** from your screenshots,
-* `01:06` : Use `MarionetteDriver` to interact with the generated properties (or text recognized by the OCR)!
+* `01:06` : Use `OcuNetDriver` to interact with the generated properties (or text recognized by the OCR)!
 
 https://user-images.githubusercontent.com/14242083/126416123-aebd0fce-825f-4ece-90e9-762503dc4cab.mp4
 
@@ -42,7 +42,7 @@ https://user-images.githubusercontent.com/14242083/126416123-aebd0fce-825f-4ece-
 ## 🚀 Getting started
 
 ```
-dotnet add package Askaiser.Marionette
+dotnet add package OcuNet
 ```
 
 It supports **.NET Standard 2.0**, **.NET Standard 2.1** an **.NET 6**, but only on Windows for now.
@@ -57,7 +57,7 @@ public partial class MyLibrary
     // This behavior is explained in the next section.
 }
 
-using (var driver = MarionetteDriver.Create(/* optional DriverOptions */))
+using (var driver = OcuNetDriver.Create(/* optional DriverOptions */))
 {
     // in this exemple, we enter a username and password in a login page
     await driver.WaitForAsync(MyLibrary.Instance.Pages.Login.Title, waitFor: TimeSpan.FromSeconds(5));
@@ -73,7 +73,7 @@ using (var driver = MarionetteDriver.Create(/* optional DriverOptions */))
 }
 ```
 
-The [sample project](https://github.com/asimmon/askaiser-marionette/tree/master/samples/Askaiser.Marionette.ConsoleApp) shows the basics of using this library.
+The [sample project](https://github.com/asimmon/askaiser-marionette/tree/master/samples/OcuNet.ConsoleApp) shows the basics of using this library.
 
 
 ## 🏭 Change the C# source generator behavior
@@ -293,7 +293,7 @@ FindLocationsAsync(Image image, TimeSpan? waitFor, Rectangle? searchRect, decima
 
 > 👷‍♂️ Work in progress
 
-This section will soon show how Marionette can be used in an [Azure Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines/) continuous integration environment:
+This section will soon show how OcuNet can be used in an [Azure Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines/) continuous integration environment:
 
 1. Setup a dedicated Windows agent, or use the [built-in Windows agent](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser#microsoft-hosted-agents),
 2. Use Microsoft's [Screen Resolution Utility task](https://marketplace.visualstudio.com/items?itemName=ms-autotest.screen-resolution-utility-task) to setup a virtual monitor and change its resolution.

@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <Copyright>Copyright © Anthony Simmon $([System.DateTime]::UtcNow.ToString(yyyy))</Copyright>
     <Authors>Anthony Simmon</Authors>
@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <Description>Askaiser.Marionette is a test automation framework based on image and text recognition.</Description>
+    <Description>OcuNet is a test automation framework based on image and text recognition.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
