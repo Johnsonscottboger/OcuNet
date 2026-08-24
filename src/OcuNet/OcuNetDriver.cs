@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using OcuNet.Commands;
 
@@ -35,6 +36,9 @@ public sealed class OcuNetDriver : IDisposable
     private MouseSpeed _mouseSpeed;
     private TimeSpan _defaultWaitForDuration;
     private TimeSpan _defaultKeyboardSleepAfterDuration;
+    private AttachedWindow? _attachedWindow;
+
+    private static readonly TimeSpan WindowSearchPollInterval = TimeSpan.FromMilliseconds(250);
 
     internal OcuNetDriver(
         DriverOptions options,
@@ -70,6 +74,11 @@ public sealed class OcuNetDriver : IDisposable
         this._defaultWaitForDuration = options.DefaultWaitForDuration;
         this._defaultKeyboardSleepAfterDuration = options.DefaultKeyboardSleepAfterDuration;
     }
+
+    /// <summary>
+    /// Gets the window currently attached to this driver, or <c>null</c> when no window is attached.
+    /// </summary>
+    public AttachedWindow? CurrentWindow => this._attachedWindow;
 
     public static OcuNetDriver Create()
     {
@@ -124,9 +133,237 @@ public sealed class OcuNetDriver : IDisposable
         screenshot.Save(destinationPath, ImageFormat.Png);
     }
 
+    /// <summary>
+    /// Saves a screenshot cropped to the currently attached window's bounds (see
+    /// <see cref="AttachWindowAsync(string, TimeSpan?, WindowTitleMatchMode, bool, double)"/>).
+    /// The window bounds are refreshed from the operating system at capture time, so a
+    /// moved or resized window is always followed. Throws <see cref="WindowNotFoundException"/>
+    /// when no window is attached or the attached window is no longer available.
+    /// </summary>
+    public async Task SaveWindowScreenshotAsync(Stream destinationStream)
+    {
+        using var screenshot = await this.GetWindowScreenshotAsync().ConfigureAwait(false);
+        screenshot.Save(destinationStream, ImageFormat.Png);
+    }
+
+    /// <summary>
+    /// Saves a screenshot cropped to the currently attached window's bounds (see
+    /// <see cref="AttachWindowAsync(string, TimeSpan?, WindowTitleMatchMode, bool, double)"/>).
+    /// The window bounds are refreshed from the operating system at capture time, so a
+    /// moved or resized window is always followed. Throws <see cref="WindowNotFoundException"/>
+    /// when no window is attached or the attached window is no longer available.
+    /// </summary>
+    public async Task SaveWindowScreenshotAsync(string destinationPath)
+    {
+        using var screenshot = await this.GetWindowScreenshotAsync().ConfigureAwait(false);
+        screenshot.Save(destinationPath, ImageFormat.Png);
+    }
+
+    private async Task<Bitmap> GetWindowScreenshotAsync()
+    {
+        if (this._attachedWindow == null)
+        {
+            throw new WindowNotFoundException(
+                Messages.OcuNetDriver_Throw_NoAttachedWindowForScreenshot,
+                string.Empty,
+                Array.Empty<WindowInfo>());
+        }
+
+        var monitor = await this.GetCurrentMonitorAsync().ConfigureAwait(false);
+        var windowBounds = this._attachedWindow.Bounds;
+
+        // Convert the absolute screen rectangle to monitor-relative coordinates and
+        // clamp it to the monitor (the window may extend beyond its screen edge).
+        var left = Math.Max(0, windowBounds.Left - monitor.Left);
+        var top = Math.Max(0, windowBounds.Top - monitor.Top);
+        var right = Math.Min(monitor.Width, windowBounds.Right - monitor.Left);
+        var bottom = Math.Min(monitor.Height, windowBounds.Bottom - monitor.Top);
+
+        if (right <= left || bottom <= top)
+        {
+            throw new InvalidOperationException(
+                Messages.OcuNetDriver_Throw_WindowOutsideMonitor.FormatInvariant(this._attachedWindow.Title));
+        }
+
+        var screenshot = await this._monitorService.GetScreenshot(monitor).ConfigureAwait(false);
+        using (screenshot)
+        {
+            return screenshot.Crop(new Rectangle(left, top, right, bottom));
+        }
+    }
+
     public Point GetMousePositionAsync()
     {
         return this._mouseController.GetCurrentPosition();
+    }
+
+    /// <summary>
+    /// Enumerates all visible top-level windows with a non-empty title, in z-order.
+    /// </summary>
+    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "It looks more coherent to only use instance methods here.")]
+    public Task<WindowInfo[]> ListWindowsAsync()
+    {
+        return WindowNative.GetWindowsAsync();
+    }
+
+    /// <summary>
+    /// Finds a window whose title matches <paramref name="titlePattern"/> and attaches it to this
+    /// driver. While a window is attached, every element lookup is automatically constrained to the
+    /// window's current bounds; call <see cref="DetachWindowAsync"/> or dispose the returned
+    /// <see cref="AttachedWindow"/> to restore full-screen lookups.
+    /// </summary>
+    /// <param name="titlePattern">
+    /// The window title pattern. Interpretation depends on <paramref name="matchMode"/>:
+    /// case-insensitive substring (default), regular expression, or fuzzy pattern.
+    /// </param>
+    /// <param name="waitFor">
+    /// How long to poll for the window to appear (for example while an application is still
+    /// launching). <c>null</c> performs a single attempt.
+    /// </param>
+    /// <param name="matchMode">The title matching mode.</param>
+    /// <param name="activate">When <c>true</c>, restores and activates the window after attaching.</param>
+    /// <param name="fuzzyThreshold">
+    /// The minimum similarity (0 to 1) required in <see cref="WindowTitleMatchMode.Fuzzy"/> mode.
+    /// </param>
+    /// <returns>The attached window; disposing it detaches it.</returns>
+    /// <exception cref="ArgumentException">The pattern is empty or not a valid regular expression.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fuzzyThreshold"/> is outside [0, 1].</exception>
+    /// <exception cref="WindowNotFoundException">No window matched, or several windows matched.</exception>
+    public async Task<AttachedWindow> AttachWindowAsync(
+        string titlePattern,
+        TimeSpan? waitFor = default,
+        WindowTitleMatchMode matchMode = WindowTitleMatchMode.Substring,
+        bool activate = true,
+        double fuzzyThreshold = 0.6)
+    {
+        if (string.IsNullOrWhiteSpace(titlePattern))
+        {
+            throw new ArgumentException(Messages.OcuNetDriver_Throw_EmptyWindowTitlePattern, nameof(titlePattern));
+        }
+
+        if (fuzzyThreshold < 0 || fuzzyThreshold > 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(fuzzyThreshold), Messages.OcuNetDriver_Throw_InvalidFuzzyThreshold);
+        }
+
+        if (matchMode == WindowTitleMatchMode.Regex && !WindowTitleMatcher.TryCompileRegex(titlePattern, out _))
+        {
+            throw new ArgumentException(Messages.OcuNetDriver_Throw_InvalidWindowTitleRegex.FormatInvariant(titlePattern), nameof(titlePattern));
+        }
+
+        var effectiveWaitFor = waitFor.GetValueOrDefault(TimeSpan.Zero);
+        if (effectiveWaitFor < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(waitFor), Messages.Throw_NegativeWaitFor);
+        }
+
+        var stopwatch = Stopwatch.StartNew();
+
+        WindowInfo match;
+        IReadOnlyList<WindowInfo> windows;
+        while (true)
+        {
+            windows = await WindowNative.GetWindowsAsync().ConfigureAwait(false);
+            var matches = WindowTitleMatcher.MatchAll(windows, titlePattern, matchMode, fuzzyThreshold);
+
+            if (matches.Count == 1)
+            {
+                match = matches[0];
+                break;
+            }
+
+            if (matches.Count > 1)
+            {
+                var titles = string.Join(", ", matches.Select(window => $"'{window.Title}'"));
+                throw new WindowNotFoundException(
+                    Messages.WindowNotFound_Throw_MultipleMatches.FormatInvariant(titlePattern, titles),
+                    titlePattern,
+                    matches);
+            }
+
+            if (stopwatch.Elapsed >= effectiveWaitFor)
+            {
+                throw CreateWindowNotFound(titlePattern, effectiveWaitFor, windows);
+            }
+
+            await Task.Delay(WindowSearchPollInterval).ConfigureAwait(false);
+        }
+
+        var attachedWindow = new AttachedWindow(this, match);
+        this._attachedWindow = attachedWindow;
+
+        if (activate)
+        {
+            await attachedWindow.ActivateAsync().ConfigureAwait(false);
+        }
+
+        await this.FollowWindowMonitorAsync(attachedWindow.Bounds).ConfigureAwait(false);
+
+        return attachedWindow;
+    }
+
+    /// <summary>
+    /// Detaches the currently attached window, restoring full-screen lookups.
+    /// </summary>
+    public Task DetachWindowAsync()
+    {
+        this.DetachWindow();
+        return Task.CompletedTask;
+    }
+
+    internal void DetachWindow()
+    {
+        this._attachedWindow = null;
+    }
+
+    private static WindowNotFoundException CreateWindowNotFound(string titlePattern, TimeSpan waitFor, IReadOnlyList<WindowInfo> windows)
+    {
+        if (windows.Count == 0)
+        {
+            return new WindowNotFoundException(
+                Messages.WindowNotFound_Throw_NoMatch.FormatInvariant(titlePattern, waitFor),
+                titlePattern,
+                windows);
+        }
+
+        var closest = windows
+            .OrderByDescending(window => WindowTitleMatcher.GetSimilarity(titlePattern, window.Title))
+            .First();
+        var similarity = WindowTitleMatcher.GetSimilarity(titlePattern, closest.Title);
+        var titles = string.Join(", ", windows.Select(window => $"'{window.Title}'"));
+
+        return new WindowNotFoundException(
+            Messages.WindowNotFound_Throw_NoMatch_WithWindows.FormatInvariant(titlePattern, waitFor, closest.Title, similarity, titles),
+            titlePattern,
+            windows);
+    }
+
+    private async Task FollowWindowMonitorAsync(Rectangle windowBounds)
+    {
+        var monitors = await this.GetMonitorsAsync().ConfigureAwait(false);
+        if (monitors.Length == 0)
+        {
+            return;
+        }
+
+        var center = windowBounds.Center;
+        var monitor = monitors.FirstOrDefault(candidate =>
+                center.X >= candidate.Left && center.X < candidate.Right &&
+                center.Y >= candidate.Top && center.Y < candidate.Bottom)
+            ?? monitors.FirstOrDefault(candidate => candidate.IsPrimary)
+            ?? monitors[0];
+
+        this.SetCurrentMonitor(monitor);
+    }
+
+    internal Rectangle? GetEffectiveSearchRectangle(Rectangle? searchRect)
+    {
+        if (searchRect != null || this._attachedWindow == null)
+        {
+            return searchRect;
+        }
+
+        return this._attachedWindow.Bounds;
     }
 
     internal async Task<SearchResult> WaitForAsync(IElement element, TimeSpan? waitFor, Rectangle? searchRect, NoSingleResultBehavior noSingleResultBehavior)
@@ -137,7 +374,8 @@ public sealed class OcuNetDriver : IDisposable
         }
 
         var effectiveWaitFor = waitFor.GetValueOrDefault(this._defaultWaitForDuration);
-        return await this._waitForHandler.Execute(new WaitForCommand(new[] { element }, effectiveWaitFor, searchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
+        var effectiveSearchRect = this.GetEffectiveSearchRectangle(searchRect);
+        return await this._waitForHandler.Execute(new WaitForCommand(new[] { element }, effectiveWaitFor, effectiveSearchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
     }
 
     public async Task<SearchResult> WaitForAsync(IElement element, TimeSpan? waitFor = default, Rectangle? searchRect = default)
@@ -159,7 +397,8 @@ public sealed class OcuNetDriver : IDisposable
         }
 
         var effectiveWaitFor = waitFor.GetValueOrDefault(this._defaultWaitForDuration);
-        return await this._waitForAnyHandler.Execute(new WaitForCommand(enumeratedElements, effectiveWaitFor, searchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
+        var effectiveSearchRect = this.GetEffectiveSearchRectangle(searchRect);
+        return await this._waitForAnyHandler.Execute(new WaitForCommand(enumeratedElements, effectiveWaitFor, effectiveSearchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
     }
 
     public async Task<SearchResult> WaitForAnyAsync(IEnumerable<IElement> elements, TimeSpan? waitFor = default, Rectangle? searchRect = default)
@@ -181,7 +420,8 @@ public sealed class OcuNetDriver : IDisposable
         }
 
         var effectiveWaitFor = waitFor.GetValueOrDefault(this._defaultWaitForDuration);
-        return await this._waitForAllHandler.Execute(new WaitForCommand(enumeratedElements, effectiveWaitFor, searchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
+        var effectiveSearchRect = this.GetEffectiveSearchRectangle(searchRect);
+        return await this._waitForAllHandler.Execute(new WaitForCommand(enumeratedElements, effectiveWaitFor, effectiveSearchRect, this._monitorIndex, noSingleResultBehavior)).ConfigureAwait(false);
     }
 
     public async Task<SearchResultCollection> WaitForAllAsync(IEnumerable<IElement> elements, TimeSpan? waitFor = default, Rectangle? searchRect = default)

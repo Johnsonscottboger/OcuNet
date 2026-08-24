@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -130,5 +130,32 @@
   </data>
   <data name="MatExtensions_Throw_InvalidImageChannelCount" xml:space="preserve">
     <value>Provided image has {0} channels, but only one (grayscale), 3 (BGR/RGB) and 4 (BGRA/RGBA) channels are supported.</value>
+  </data>
+  <data name="AttachedWindow_Throw_WindowClosed" xml:space="preserve">
+    <value>The attached window '{0}' is no longer available. Call AttachWindowAsync again to re-attach it.</value>
+  </data>
+  <data name="OcuNetDriver_Throw_EmptyWindowTitlePattern" xml:space="preserve">
+    <value>titlePattern cannot be null or empty.</value>
+  </data>
+  <data name="OcuNetDriver_Throw_InvalidFuzzyThreshold" xml:space="preserve">
+    <value>fuzzyThreshold must be between 0 and 1.</value>
+  </data>
+  <data name="OcuNetDriver_Throw_InvalidWindowTitleRegex" xml:space="preserve">
+    <value>The title pattern '{0}' is not a valid regular expression.</value>
+  </data>
+  <data name="WindowNotFound_Throw_MultipleMatches" xml:space="preserve">
+    <value>Multiple windows match the title pattern '{0}': {1}. Use a more specific pattern or WindowTitleMatchMode.Regex.</value>
+  </data>
+  <data name="WindowNotFound_Throw_NoMatch" xml:space="preserve">
+    <value>No window matches the title pattern '{0}' within {1}. No visible titled windows were found.</value>
+  </data>
+  <data name="WindowNotFound_Throw_NoMatch_WithWindows" xml:space="preserve">
+    <value>No window matches the title pattern '{0}' within {1}. Closest match: '{2}' (similarity {3:P0}). Open windows: {4}.</value>
+  </data>
+  <data name="OcuNetDriver_Throw_NoAttachedWindowForScreenshot" xml:space="preserve">
+    <value>No window is attached. Call AttachWindowAsync before taking a window screenshot.</value>
+  </data>
+  <data name="OcuNetDriver_Throw_WindowOutsideMonitor" xml:space="preserve">
+    <value>The attached window '{0}' is not visible on the current monitor.</value>
   </data>
 </root>

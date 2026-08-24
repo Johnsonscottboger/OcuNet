@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 OcuNet.OcrEngine
 OcuNet.OcrEngine.PaddleOCR = 1 -> OcuNet.OcrEngine
 OcuNet.OcrEngine.Tesseract = 0 -> OcuNet.OcrEngine
@@ -30,3 +30,30 @@ OcuNet.DriverOptions.PaddleOcrMinimumScore.get -> float
 OcuNet.DriverOptions.PaddleOcrMinimumScore.init -> void
 OcuNet.DriverOptions.PaddleOcrModel.get -> OcuNet.PaddleOcrModel
 OcuNet.DriverOptions.PaddleOcrModel.init -> void
+OcuNet.AttachedWindow
+OcuNet.AttachedWindow.ActivateAsync() -> System.Threading.Tasks.Task!
+OcuNet.AttachedWindow.Bounds.get -> OcuNet.Rectangle!
+OcuNet.AttachedWindow.Dispose() -> void
+OcuNet.AttachedWindow.Handle.get -> System.IntPtr
+OcuNet.AttachedWindow.IsValid.get -> bool
+OcuNet.AttachedWindow.Title.get -> string!
+OcuNet.OcuNetDriver.AttachWindowAsync(string! titlePattern, System.TimeSpan? waitFor = null, OcuNet.WindowTitleMatchMode matchMode = OcuNet.WindowTitleMatchMode.Substring, bool activate = true, double fuzzyThreshold = 0.6) -> System.Threading.Tasks.Task<OcuNet.AttachedWindow!>!
+OcuNet.OcuNetDriver.CurrentWindow.get -> OcuNet.AttachedWindow?
+OcuNet.OcuNetDriver.DetachWindowAsync() -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.ListWindowsAsync() -> System.Threading.Tasks.Task<OcuNet.WindowInfo![]!>!
+OcuNet.OcuNetDriver.SaveWindowScreenshotAsync(System.IO.Stream! destinationStream) -> System.Threading.Tasks.Task!
+OcuNet.OcuNetDriver.SaveWindowScreenshotAsync(string! destinationPath) -> System.Threading.Tasks.Task!
+OcuNet.WindowInfo
+OcuNet.WindowInfo.Bounds.get -> OcuNet.Rectangle!
+OcuNet.WindowInfo.Handle.get -> System.IntPtr
+OcuNet.WindowInfo.Title.get -> string!
+OcuNet.WindowInfo.WindowInfo(System.IntPtr handle, string! title, OcuNet.Rectangle! bounds) -> void
+OcuNet.WindowNotFoundException
+OcuNet.WindowNotFoundException.CandidateWindows.get -> System.Collections.Generic.IReadOnlyList<OcuNet.WindowInfo!>!
+OcuNet.WindowNotFoundException.TitlePattern.get -> string!
+OcuNet.WindowNotFoundException.WindowNotFoundException(string! message, string! titlePattern, System.Collections.Generic.IReadOnlyList<OcuNet.WindowInfo!>! candidateWindows) -> void
+OcuNet.WindowTitleMatchMode
+OcuNet.WindowTitleMatchMode.Fuzzy = 2 -> OcuNet.WindowTitleMatchMode
+OcuNet.WindowTitleMatchMode.Regex = 1 -> OcuNet.WindowTitleMatchMode
+OcuNet.WindowTitleMatchMode.Substring = 0 -> OcuNet.WindowTitleMatchMode
+override OcuNet.WindowInfo.ToString() -> string!
