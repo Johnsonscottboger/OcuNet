@@ -15,7 +15,21 @@ internal sealed class ImageElementRecognizer : IElementRecognizer
     // matched on a 100% display, or vice versa). Only consulted when the native
     // scale (1.0) finds no match, so the common same-scale path keeps its exact
     // original behavior including multi-location flood-fill dedup.
-    private static readonly float[] ScalePyramid = new[] { 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.1f, 1.25f, 1.5f, 1.75f, 2.0f };
+    //
+    // The pyramid is denser around 1.0 because real-world scale mismatches are
+    // rarely exact round factors: e.g. a window whose client content is captured
+    // at 100% DPI but displayed in a 125%-scaled session can render the element at
+    // ~1.02x, and discrete jumps from 1.0 to 1.1 would miss it. Fine-grained steps
+    // between 0.9 and 1.1 plus the coarser anchors above keep cross-DPI matching
+    // reliable while only running when the native scale already failed.
+    private static readonly float[] ScalePyramid = new[]
+    {
+        0.5f, 0.6f, 0.7f, 0.8f,
+        0.85f, 0.9f, 0.95f,
+        1.02f, 1.04f, 1.06f, 1.08f,
+        1.1f, 1.15f, 1.2f, 1.25f, 1.3f,
+        1.5f, 1.75f, 2.0f,
+    };
 
     public async Task<RecognizerSearchResult> Recognize(Bitmap screenshot, IElement element, CancellationToken token)
     {
