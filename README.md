@@ -1,4 +1,4 @@
-﻿<!-- omit in toc -->
+<!-- omit in toc -->
 # OcuNet
 
 [![nuget](https://img.shields.io/nuget/v/OcuNet.svg?logo=nuget)](https://www.nuget.org/packages/OcuNet/)
@@ -199,6 +199,52 @@ DropToAsync(IElement element, TimeSpan? waitFor, Rectangle? searchRect)
 ScrollDownUntilVisibleAsync(IElement element, TimeSpan totalDuration, int scrollTicks, Rectangle? searchRect)
 ScrollUpUntilVisibleAsync(IElement element, TimeSpan totalDuration, int scrollTicks, Rectangle? searchRect)
 ```
+
+### Scroll screenshot
+
+Scroll screenshots are a standalone function of the driver — the driver itself carries no scroll parameters:
+
+```csharp
+ScrollScreenshot.CaptureAsync(OcuNetDriver driver, Func<ScrollScreenshotContext, Task<bool>>? stopCondition,
+    int wheelDelta, int wheelTickIntervalMs, int scrollToCaptureDelayMs, ScrollMethod scrollMethod,
+    Func<Task>? customScrollTick, CancellationToken cancellationToken)
+ScrollScreenshot.SaveAsync(OcuNetDriver driver, string destinationPath, ...) // same parameter set
+ScrollScreenshot.SaveAsync(OcuNetDriver driver, Stream destinationStream, ...) // same parameter set
+```
+
+Scrolls the attached window down and stitches a long screenshot of its content. Consecutive
+frames are stitched using their measured overlap, so the actual scroll amount per step does not matter.
+When no `stopCondition` is provided, the capture scrolls until the content stops producing new frames (bottom
+reached). Otherwise the capture stops as soon as the condition returns true (it is evaluated before any scroll
+and after every captured frame; the frame in which it is met is included in the result). Fixed rows such as
+status bars or sticky headers are handled automatically and reported through
+`ScrollScreenshotResult.TopBandRows` / `BottomBandRows`.
+
+```csharp
+using (var driver = OcuNetDriver.Create())
+{
+    await driver.AttachWindowAsync("My Application");
+
+    // Scroll to the bottom and save the full page:
+    await ScrollScreenshot.SaveAsync(driver, @"C:\page-full.png");
+
+    // Or stop as soon as an element becomes visible (the condition can use any driver API):
+    var result = await ScrollScreenshot.CaptureAsync(
+        driver,
+        async ctx => await ctx.Driver.IsVisibleAsync(MyLibrary.Instance.Pages.Order.Submit, TimeSpan.Zero, ctx.CaptureRect));
+    if (result.StopReason == ScrollScreenshotStopReason.ConditionMet)
+    {
+        result.Image.Save(@"C:\page-partial.png", ImageFormat.Png);
+    }
+}
+```
+
+Remarks:
+
+* The window must be visible (screenshots use the same screen capture as `SaveWindowScreenshotAsync`),
+* `ScrollScreenshotStopReason` distinguishes `ConditionMet`, `BottomReached`, `NoProgress` (the content stopped
+  producing new frames before the condition was met) and `MaxStepsReached` (endless feeds; the image is partial),
+* The result owns the stitched `Bitmap`: dispose the result to release it.
 
 ### Check for element visibility
 

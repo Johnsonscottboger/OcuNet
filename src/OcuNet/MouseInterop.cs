@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -9,7 +9,7 @@ internal static class MouseInterop
 {
     // One wheel click is defined as WHEEL_DELTA, which is 120.
     // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mouse_event
-    private const int WheelDelta = 120;
+    internal const int WheelDelta = 120;
 
     [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -38,13 +38,22 @@ internal static class MouseInterop
         MouseEventInterop((int)value, x, y, 0, 0);
     }
 
-    public static void MouseWheelEventUp() => MouseWheelEvent(true);
+    public static void MouseWheelEventUp() => MouseWheelEvent(true, WheelDelta);
 
-    public static void MouseWheelEventDown() => MouseWheelEvent(false);
+    public static void MouseWheelEventDown() => MouseWheelEvent(false, WheelDelta);
 
-    private static void MouseWheelEvent(bool isUp)
+    public static void MouseWheelEventUp(int delta) => MouseWheelEvent(true, delta);
+
+    public static void MouseWheelEventDown(int delta) => MouseWheelEvent(false, delta);
+
+    private static void MouseWheelEvent(bool isUp, int delta)
     {
-        var dwFlags = isUp ? WheelDelta : -WheelDelta;
+        if (delta <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(delta));
+        }
+
+        var dwFlags = isUp ? delta : -delta;
         var position = GetCursorPosition();
         MouseEventInterop((int)MouseEventFlags.Wheel, position.X, position.Y, dwFlags, 0);
     }

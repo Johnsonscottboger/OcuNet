@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -116,5 +116,11 @@ internal class MouseController : IMouseController
     {
         MouseInterop.MouseWheelEventDown();
         await Task.Delay(DelayBeforeFirstClickAction).ConfigureAwait(false);
+    }
+
+    public Task WheelDown(int delta)
+    {
+        MouseInterop.MouseWheelEventDown(delta);
+        return Task.CompletedTask;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace OcuNet;
 
@@ -23,4 +23,12 @@ internal interface IMouseController
     Task WheelUp();
 
     Task WheelDown();
+
+    /// <summary>
+    /// Scrolls down by a custom wheel delta (not necessarily a full WHEEL_DELTA=120 click). Delta-aware
+    /// apps (browsers, modern UIs) scroll proportionally, which allows precise control of the scroll
+    /// speed during scroll screenshots. The send itself must not add pacing delays — the caller controls
+    /// the cadence.
+    /// </summary>
+    Task WheelDown(int delta);
 }

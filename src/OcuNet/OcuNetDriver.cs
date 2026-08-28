@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using OcuNet.Commands;
 
@@ -13,8 +14,14 @@ namespace OcuNet;
 
 public sealed class OcuNetDriver : IDisposable
 {
-    private readonly IMonitorService _monitorService;
-    private readonly IMouseController _mouseController;
+    /// <summary>
+    /// Number of Down-arrow presses sent per capture sample in <see cref="ScrollMethod.ArrowKeys"/> mode.
+    /// One line per sample keeps the per-frame displacement small (fine-grained scrolling); the same-position
+    /// no-progress check still sees ~all rows change for any non-zero displacement.
+    /// </summary>
+    private const int ArrowKeysPerTick = 1;
+
+    private readonly IMonitorService _monitorService;    private readonly IMouseController _mouseController;
     private readonly IDisposable[] _disposables;
     private readonly WaitForCommandHandler _waitForHandler;
     private readonly WaitForAnyCommandHandler _waitForAnyHandler;
@@ -159,6 +166,32 @@ public sealed class OcuNetDriver : IDisposable
         screenshot.Save(destinationPath, ImageFormat.Png);
     }
 
+    /// <summary>
+    /// Low-level scroll inputs used by <see cref="ScrollScreenshot"/>. The driver only performs the input;
+    /// all scroll-control parameters (delta, intervals, method) live on the scroll screenshot function.
+    /// </summary>
+    internal async Task ScrollDownByDeltaAsync(int delta, int intervalMs)
+    {
+        await this._mouseController.WheelDown(delta).ConfigureAwait(false);
+        if (intervalMs > 0)
+        {
+            await this.SleepAsync(intervalMs).ConfigureAwait(false);
+        }
+    }
+
+    internal async Task ScrollDownByArrowKeysAsync(int intervalMs)
+    {
+        for (var i = 0; i < ArrowKeysPerTick; i++)
+        {
+            await this.KeyPressAsync(VirtualKeyCode.DownArrow).ConfigureAwait(false);
+        }
+
+        if (intervalMs > 0)
+        {
+            await this.SleepAsync(intervalMs).ConfigureAwait(false);
+        }
+    }
+
     private async Task<Bitmap> GetWindowScreenshotAsync()
     {
         if (this._attachedWindow == null)
@@ -169,8 +202,13 @@ public sealed class OcuNetDriver : IDisposable
                 Array.Empty<WindowInfo>());
         }
 
+        return await this.CaptureAttachedWindowAsync().ConfigureAwait(false);
+    }
+
+    internal async Task<Bitmap> CaptureAttachedWindowAsync()
+    {
         var monitor = await this.GetCurrentMonitorAsync().ConfigureAwait(false);
-        var windowBounds = this._attachedWindow.Bounds;
+        var windowBounds = this._attachedWindow!.Bounds;
 
         // Convert the absolute screen rectangle to monitor-relative coordinates and
         // clamp it to the monitor (the window may extend beyond its screen edge).

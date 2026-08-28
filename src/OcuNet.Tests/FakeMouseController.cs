@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OcuNet.Tests;
@@ -74,6 +74,17 @@ internal sealed class FakeMouseController : IMouseController
     {
         this.AddAction("WheelDown");
         return Task.CompletedTask;
+    }
+
+    public Task WheelDown(int delta)
+    {
+        this.AddAction("WheelDown", delta);
+        return Task.CompletedTask;
+    }
+
+    private void AddAction(string action, int delta)
+    {
+        this._actions.Add($"{action}({delta})");
     }
 
     private void AddAction(string action, int x, int y, MouseSpeed speed)

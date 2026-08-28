@@ -57,3 +57,32 @@ OcuNet.WindowTitleMatchMode.Fuzzy = 2 -> OcuNet.WindowTitleMatchMode
 OcuNet.WindowTitleMatchMode.Regex = 1 -> OcuNet.WindowTitleMatchMode
 OcuNet.WindowTitleMatchMode.Substring = 0 -> OcuNet.WindowTitleMatchMode
 override OcuNet.WindowInfo.ToString() -> string!
+OcuNet.ScrollScreenshotContext
+OcuNet.ScrollScreenshotContext.CaptureRect.get -> OcuNet.Rectangle!
+OcuNet.ScrollScreenshotContext.CancellationToken.get -> System.Threading.CancellationToken
+OcuNet.ScrollScreenshotContext.Driver.get -> OcuNet.OcuNetDriver!
+OcuNet.ScrollScreenshotContext.Elapsed.get -> System.TimeSpan
+OcuNet.ScrollScreenshotContext.ScrollStep.get -> int
+OcuNet.ScrollScreenshotContext.ScrollScreenshotContext(OcuNet.OcuNetDriver! driver, int scrollStep, System.TimeSpan elapsed, OcuNet.Rectangle! captureRect, System.Threading.CancellationToken cancellationToken) -> void
+OcuNet.ScrollScreenshotResult
+OcuNet.ScrollScreenshotResult.BottomBandRows.get -> int
+OcuNet.ScrollScreenshotResult.CaptureRect.get -> OcuNet.Rectangle!
+OcuNet.ScrollScreenshotResult.Dispose() -> void
+OcuNet.ScrollScreenshotResult.Elapsed.get -> System.TimeSpan
+OcuNet.ScrollScreenshotResult.FrameCount.get -> int
+OcuNet.ScrollScreenshotResult.Image.get -> System.Drawing.Bitmap!
+OcuNet.ScrollScreenshotResult.ScrollSteps.get -> int
+OcuNet.ScrollScreenshotResult.StopReason.get -> OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollScreenshotResult.TopBandRows.get -> int
+OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollScreenshotStopReason.BottomReached = 1 -> OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollScreenshotStopReason.ConditionMet = 0 -> OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollScreenshotStopReason.MaxStepsReached = 3 -> OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollScreenshotStopReason.NoProgress = 2 -> OcuNet.ScrollScreenshotStopReason
+OcuNet.ScrollMethod
+OcuNet.ScrollMethod.ArrowKeys = 1 -> OcuNet.ScrollMethod
+OcuNet.ScrollMethod.Wheel = 0 -> OcuNet.ScrollMethod
+OcuNet.ScrollScreenshot
+static OcuNet.ScrollScreenshot.CaptureAsync(OcuNet.OcuNetDriver! driver, System.Func<OcuNet.ScrollScreenshotContext!, System.Threading.Tasks.Task<bool>!>? stopCondition = null, int wheelDelta = 60, int wheelTickIntervalMs = 120, int scrollToCaptureDelayMs = 0, OcuNet.ScrollMethod scrollMethod = OcuNet.ScrollMethod.Wheel, System.Func<System.Threading.Tasks.Task!>? customScrollTick = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<OcuNet.ScrollScreenshotResult!>!
+static OcuNet.ScrollScreenshot.SaveAsync(OcuNet.OcuNetDriver! driver, string! destinationPath, System.Func<OcuNet.ScrollScreenshotContext!, System.Threading.Tasks.Task<bool>!>? stopCondition = null, int wheelDelta = 60, int wheelTickIntervalMs = 120, int scrollToCaptureDelayMs = 0, OcuNet.ScrollMethod scrollMethod = OcuNet.ScrollMethod.Wheel, System.Func<System.Threading.Tasks.Task!>? customScrollTick = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static OcuNet.ScrollScreenshot.SaveAsync(OcuNet.OcuNetDriver! driver, System.IO.Stream! destinationStream, System.Func<OcuNet.ScrollScreenshotContext!, System.Threading.Tasks.Task<bool>!>? stopCondition = null, int wheelDelta = 60, int wheelTickIntervalMs = 120, int scrollToCaptureDelayMs = 0, OcuNet.ScrollMethod scrollMethod = OcuNet.ScrollMethod.Wheel, System.Func<System.Threading.Tasks.Task!>? customScrollTick = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
