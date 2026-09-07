@@ -36,6 +36,10 @@ internal abstract class BaseWaitForCommandHandler
 
         var monitor = await this._monitorService.GetMonitor(command.MonitorIndex).ConfigureAwait(false);
         var searchRect = AdjustSearchRectangleRelativeToMonitorSize(monitor, command.SearchRectangle);
+
+        // A clamped search rectangle that lost all its visible area (see AdjustSearchRectangleRelativeToMonitorSize)
+        // contains nothing recognizable, so recognition is skipped and the poll runs to the deadline.
+        var nothingVisible = command.SearchRectangle != null && searchRect == null;
         var watch = Stopwatch.StartNew();
 
         RecognizerSearchResult? recognizerResult = null;
@@ -46,25 +50,28 @@ internal abstract class BaseWaitForCommandHandler
                 break;
             }
 
-            using var screenshot = await this.GetScreenshot(monitor, searchRect).ConfigureAwait(false);
-
-            if (token.IsCancellationRequested)
+            if (!nothingVisible)
             {
-                break;
-            }
+                using var screenshot = await this.GetScreenshot(monitor, searchRect).ConfigureAwait(false);
 
-            recognizerResult?.Dispose();
-            recognizerResult = await this._elementRecognizer.Recognize(screenshot, element, token).ConfigureAwait(false);
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
 
-            if (token.IsCancellationRequested)
-            {
-                break;
-            }
+                recognizerResult?.Dispose();
+                recognizerResult = await this._elementRecognizer.Recognize(screenshot, element, token).ConfigureAwait(false);
 
-            if (recognizerResult.Success)
-            {
-                var adjustedResult = recognizerResult.AdjustToMonitor(monitor).AdjustToSearchRectangle(searchRect);
-                return new RecognizerSearchResult(recognizerResult.TransformedScreenshot, adjustedResult);
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                if (recognizerResult.Success)
+                {
+                    var adjustedResult = recognizerResult.AdjustToMonitor(monitor).AdjustToSearchRectangle(searchRect);
+                    return new RecognizerSearchResult(recognizerResult.TransformedScreenshot, adjustedResult);
+                }
             }
 
             if (this._options.WaitForThrottlingInterval > TimeSpan.Zero)
@@ -91,10 +98,23 @@ internal abstract class BaseWaitForCommandHandler
             return null;
         }
 
-        var offsetLeft = searchRect.Left - monitor.Left;
-        var offsetTop = searchRect.Top - monitor.Top;
+        // The search rectangle is in absolute screen coordinates, but recognition runs on a screenshot of a
+        // single monitor, so it is converted to monitor-relative coordinates and clamped to the monitor's
+        // bounds. Window rectangles returned by GetWindowRect can extend past the monitor edges — a maximized
+        // window keeps its invisible resize borders outside the screen — and cropping pixels that do not exist
+        // on the monitor would fail, so the region is limited to what the monitor actually shows.
+        var left = Math.Max(monitor.Left, searchRect.Left) - monitor.Left;
+        var top = Math.Max(monitor.Top, searchRect.Top) - monitor.Top;
+        var right = Math.Min(monitor.Right, searchRect.Right) - monitor.Left;
+        var bottom = Math.Min(monitor.Bottom, searchRect.Bottom) - monitor.Top;
 
-        return new Rectangle(offsetLeft, offsetTop, offsetLeft + searchRect.Width, offsetTop + searchRect.Height);
+        if (right <= left || bottom <= top)
+        {
+            // The search region has no visible intersection with this monitor (e.g. an off-screen window).
+            return null;
+        }
+
+        return new Rectangle(left, top, right, bottom);
     }
 
     private async Task<Bitmap> GetScreenshot(MonitorDescription monitor, Rectangle? searchRect)
