@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <PropertyGroup>
     <Copyright>Copyright © Anthony Simmon $([System.DateTime]::UtcNow.ToString(yyyy))</Copyright>
     <Authors>Anthony Simmon</Authors>
@@ -10,6 +10,26 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Description>OcuNet is a test automation framework based on image and text recognition.</Description>
+  </PropertyGroup>
+
+  <!--
+    Pin a deterministic assembly version for the OcuNet/OcuNet.SourceGenerator
+    assemblies. GitVersion (below) otherwise derives AssemblyVersion from the
+    repo's commit history (AssemblyVersion = GitVersion_AssemblySemVer), so the
+    version drifts between builds. MyAgent.Runtime.dll is compiled against
+    whatever version OcuNet.SourceGenerator had at build time, so a version
+    change between builds leaves the referencing assembly (e.g. 1.0.1.0) and the
+    deployed DLL (e.g. 1.0.0.0) out of sync, producing:
+      Could not load file or assembly 'OcuNet.SourceGenerator, Version=1.0.1.0'
+    Pinning AssemblyVersion/FileVersion and disabling GitVersion's
+    UpdateAssemblyInfo makes the assembly version stable so the reference always
+    matches the deployed copy. (The git-derived package/NuGet version is kept for
+    OcuNet's own packaging; this only pins the assembly identity.)
+  -->
+  <PropertyGroup>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
