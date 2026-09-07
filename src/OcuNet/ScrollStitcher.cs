@@ -68,6 +68,21 @@ internal static class ScrollStitcher
     public const double StaticBandMajority = 0.50;
 
     /// <summary>
+    /// Minimum length of a contiguous majority-static row run that anchors a fixed band. Real windows
+    /// re-render their topmost border rows slightly differently on every capture (anti-aliasing over the
+    /// scroll animation), so the band is anchored on a solid static run instead of the very first row.
+    /// </summary>
+    public const int StaticBandMinRunRows = 20;
+
+    /// <summary>
+    /// Maximum number of rows from the frame edge within which the band anchor is searched. A fixed band
+    /// (title bar, status bar, sticky header) sits at the window's edge; rows deeper than this can only be
+    /// scrolling content with a coincidental static area (blank padding), which is harmless to absorb but
+    /// must not anchor a band far away from the edge.
+    /// </summary>
+    public const int StaticBandAnchorSearchRows = 256;
+
+    /// <summary>
     /// During capture, a step is considered "no progress" when at most this fraction of the frame rows
     /// changed at the same screen position (local dynamics such as a scroll-percentage overlay, clock or
     /// cursor stay below it; actual scrolling changes far more rows).
@@ -389,7 +404,9 @@ internal static class ScrollStitcher
     /// Detects the fixed rows at the top and bottom of the captured frames (status bar, sticky header or
     /// footer). A row is fixed when it looks identical at the same screen position in the majority of the
     /// consecutive frame pairs, so frames captured after the content stopped moving do not pollute the
-    /// result.
+    /// result. The band itself is anchored on the first solid static run near the frame edge rather than
+    /// on row 0/height-1: a few lead-in rows can carry per-frame rendering noise (window border
+    /// anti-aliasing) without zeroing the whole band.
     /// </summary>
     public static (int TopRows, int BottomRows) DetectStaticBands(IReadOnlyList<Bitmap> frames)
     {
@@ -427,19 +444,85 @@ internal static class ScrollStitcher
             }
         }
 
-        var topRows = 0;
-        while (topRows < height && staticCounts[topRows] >= required)
+        return (DetectTopBandRows(staticCounts, height, required), DetectBottomBandRows(staticCounts, height, required));
+    }
+
+    private static int DetectTopBandRows(int[] staticCounts, int height, int required)
+    {
+        // Phase 1: anchor on the first majority-static run of StaticBandMinRunRows near the top edge.
+        var searchRows = Math.Min(height, StaticBandAnchorSearchRows);
+        var anchor = -1;
+        for (var y = 0; y + StaticBandMinRunRows <= searchRows; y++)
         {
-            topRows++;
+            if (IsStaticRun(staticCounts, y, required, StaticBandMinRunRows))
+            {
+                anchor = y;
+                break;
+            }
         }
 
-        var bottomRows = 0;
-        while (bottomRows < height && staticCounts[height - 1 - bottomRows] >= required)
+        if (anchor < 0)
         {
-            bottomRows++;
+            return 0;
         }
 
-        return (topRows, bottomRows);
+        // Phase 2: extend the band from the anchor through the static run (rows before the anchor — the
+        // noisy lead-in near the edge — belong to the window chrome and are swallowed by the band).
+        var end = anchor;
+        while (end < height && staticCounts[end] >= required)
+        {
+            end++;
+        }
+
+        return end;
+    }
+
+    private static int DetectBottomBandRows(int[] staticCounts, int height, int required)
+    {
+        // Mirror of DetectTopBandRows: anchor on the last majority-static run near the bottom edge, then
+        // extend upward. Rows after the anchor (toward the edge) are swallowed by the band.
+        var searchRows = Math.Min(height, StaticBandAnchorSearchRows);
+        var anchor = -1;
+        var minY = Math.Max(0, height - searchRows);
+        for (var y = height - StaticBandMinRunRows; y >= minY && y >= 0; y--)
+        {
+            if (IsStaticRun(staticCounts, y, required, StaticBandMinRunRows))
+            {
+                anchor = y;
+                break;
+            }
+        }
+
+        if (anchor < 0)
+        {
+            return 0;
+        }
+
+        var start = anchor;
+        while (start > 0 && staticCounts[start - 1] >= required)
+        {
+            start--;
+        }
+
+        return height - start;
+    }
+
+    private static bool IsStaticRun(int[] staticCounts, int startRow, int required, int runLength)
+    {
+        if (startRow + runLength > staticCounts.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < runLength; i++)
+        {
+            if (staticCounts[startRow + i] < required)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

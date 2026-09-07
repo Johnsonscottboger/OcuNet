@@ -163,6 +163,111 @@ public class ScrollStitcherTests
     }
 
     [Fact]
+    public async Task DetectStaticBands_NoisyLeadInRows_StillDetectsBand()
+    {
+        // A real maximized window re-renders its topmost 1-2 border rows slightly differently on every
+        // capture (anti-aliasing over the scroll animation), so those lead-in rows are NOT static. The
+        // band must not be zeroed by them — everything else in the band is static, and the content below
+        // moves.
+        var frames = new List<Bitmap>();
+        try
+        {
+            for (var i = 0; i < 6; i++)
+            {
+                var frame = ScrollTestUtils.CreateCanvasWithFixedTopBand(CanvasWidth, ViewportHeight, i * 60, bandHeight: 80);
+                AddPerFrameNoiseRows(frame, seed: i, rowCount: 2);
+                frames.Add(frame);
+            }
+
+            var (topRows, bottomRows) = ScrollStitcher.DetectStaticBands(frames);
+
+            Assert.Equal(80, topRows);
+            Assert.Equal(0, bottomRows);
+        }
+        finally
+        {
+            foreach (var frame in frames)
+            {
+                frame.Dispose();
+            }
+        }
+    }
+
+    [Fact]
+    public async Task StitchAll_NoisyLeadInRows_FullPipeline()
+    {
+        // End-to-end over the same scenario as DetectStaticBands_NoisyLeadInRows_StillDetectsBand: the
+        // band must be skipped on every frame after the first, so the stitched image equals the original
+        // long canvas (with the first frame's lead-in noise at the very top).
+        var frames = new List<Bitmap>();
+        try
+        {
+            var offsets = new[] { 0, 150, 300 };
+            foreach (var offset in offsets)
+            {
+                var frame = ScrollTestUtils.CreateCanvasWithFixedTopBand(CanvasWidth, ViewportHeight, offset, bandHeight: 80);
+                AddPerFrameNoiseRows(frame, seed: offset / 150, rowCount: 2);
+                frames.Add(frame);
+            }
+
+            var (topRows, bottomRows) = ScrollStitcher.DetectStaticBands(frames);
+            using var stitched = ScrollStitcher.StitchAll(frames, topRows, bottomRows);
+            using var expected = ScrollTestUtils.CreateCanvasWithFixedTopBand(CanvasWidth, ViewportHeight + 300, 0, bandHeight: 80);
+
+            // The top band appears only on the first frame, so its noise rows must match frame 0's.
+            using (var frame0 = frames[0])
+            {
+                var noise = ScrollTestUtils.CropRows(frame0, 0, 2);
+                using var graphics = Graphics.FromImage(expected);
+                graphics.DrawImageUnscaled(noise, 0, 0);
+                noise.Dispose();
+            }
+
+            Assert.Equal(80, topRows);
+            Assert.Equal(ViewportHeight + 300, stitched.Height);
+            ScrollTestUtils.AssertBitmapsEqual(expected, stitched);
+        }
+        finally
+        {
+            foreach (var frame in frames)
+            {
+                frame.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Overwrites the topmost <paramref name="rowCount"/> rows with a color derived from <paramref name="seed"/>,
+    /// simulating per-frame rendering noise (window border anti-aliasing) in the band lead-in.
+    /// </summary>
+    private static void AddPerFrameNoiseRows(Bitmap frame, int seed, int rowCount)
+    {
+        var data = frame.LockBits(new System.Drawing.Rectangle(0, 0, frame.Width, rowCount), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        try
+        {
+            var stride = data.Stride;
+            var pixels = new byte[Math.Abs(stride) * rowCount];
+            for (var y = 0; y < rowCount; y++)
+            {
+                for (var x = 0; x < frame.Width; x++)
+                {
+                    var p = (y * stride) + (x * 4);
+                    pixels[p] = (byte)(seed * 40);      // Distinct enough per seed to defeat the
+                    pixels[p + 1] = (byte)(seed * 40);  // pixel-difference tolerance (> 30 per row).
+                    pixels[p + 2] = (byte)(seed * 40);
+                    pixels[p + 3] = 255;
+                }
+            }
+
+            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, data.Scan0, pixels.Length);
+        }
+        finally
+        {
+            frame.UnlockBits(data);
+        }
+    }
+
+    [Fact]
     public async Task DetectStaticBands_BottomFooter_IsDetected()
     {
         var frames = new List<Bitmap>();
